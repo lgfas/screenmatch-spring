@@ -4,12 +4,16 @@ package br.com.alura.screenmatchspring.main;
 
 import br.com.alura.screenmatchspring.model.DadosSerie;
 import br.com.alura.screenmatchspring.model.DadosTemporada;
+import br.com.alura.screenmatchspring.model.Serie;
+import br.com.alura.screenmatchspring.repository.SerieRepository;
 import br.com.alura.screenmatchspring.service.ConsumoApi;
 import br.com.alura.screenmatchspring.service.ConverteDados;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -20,6 +24,12 @@ public class Main {
     private final String API_KEY = "&apikey=eab1e0f8";
 
     private List<DadosSerie> dadosSeries = new ArrayList<>();
+
+    private SerieRepository serieRepository;
+
+    public Main(SerieRepository serieRepository) {
+        this.serieRepository = serieRepository;
+    }
 
     public void exibeMenu() {
 
@@ -60,7 +70,9 @@ public class Main {
 
     private void buscarSerieWeb () {
         DadosSerie dados = getDadosSerie();
-        dadosSeries.add(dados);
+        Serie serie = new Serie(dados);
+        //dadosSeries.add(dados);
+        serieRepository.save(serie);
         System.out.println(dados);
     }
 
@@ -87,7 +99,11 @@ public class Main {
     }
 
     private void listarSeriesBuscadas() {
-        dadosSeries.forEach(System.out::println);
+        List<Serie> series = serieRepository.findAll();
+
+        series.stream()
+                .sorted(Comparator.comparing(Serie::getGenero))
+                .forEach(System.out::println);
 
     }
 
