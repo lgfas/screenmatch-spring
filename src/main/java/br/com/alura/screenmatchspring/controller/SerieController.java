@@ -8,6 +8,6 @@ public class SerieController {
 
     @GetMapping("/series")
     public String obterSeries() {
-        return "Aqui vão ser listadas as séries.";
+        return "Aqui vão ser listadas as séries";
     }
 }
